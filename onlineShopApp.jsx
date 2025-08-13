@@ -1,195 +1,12 @@
-import React, { useState, useEffect, createContext, useContext } from 'react';
-import { initializeApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
-import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from 'firebase/firestore';
+import React, { useContext } from 'react';
 import { Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react';
-
-// --- Firebase Configuration ---
-// IMPORTANT: Replace with your actual Firebase configuration
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
-};
-
-// --- Firebase Initialization ---
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// --- App Context ---
-// NOTE: In a multi-file project, this context would be in its own file (e.g., AppContext.js)
-// and imported into both the main app and the admin page.
-export const AppContext = createContext();
-
-const AppProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [products, setProducts] = useState([]);
-    const [cart, setCart] = useState({});
-    const [currentPage, setCurrentPage] = useState('products'); // products, cart, productDetail, login, signup
-    const [selectedProduct, setSelectedProduct] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [authMessage, setAuthMessage] = useState(null);
-    
-    // --- Authentication ---
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setUser(user);
-            if (user) {
-                loadCart(user.uid);
-                if(authMessage) setAuthMessage(null);
-            } else {
-                setCart({});
-            }
-            setLoading(false);
-        });
-        return () => unsubscribe();
-    }, [authMessage]);
-
-    const signUp = async (email, password) => {
-        try {
-            await createUserWithEmailAndPassword(auth, email, password);
-            setError(null);
-        } catch (error) {
-            setError(error.message);
-        }
-    };
-
-    const logIn = async (email, password) => {
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            setError(null);
-        } catch (error) {
-            setError(error.message);
-        }
-    };
-
-    const logOut = async () => {
-        await signOut(auth);
-        setCurrentPage('products');
-    };
-    
-    const navigate = (page) => {
-        setError(null);
-        setAuthMessage(null);
-        setCurrentPage(page);
-    };
-
-    // --- Product Fetching ---
-    const fetchProducts = async () => {
-        try {
-            const productsCollection = collection(db, 'products');
-            const productSnapshot = await getDocs(productsCollection);
-            const productList = productSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            setProducts(productList);
-        } catch (err) {
-            setError('Failed to fetch products.');
-            console.error(err);
-        }
-    };
-
-    useEffect(() => {
-        fetchProducts();
-    }, []);
-
-    // --- Cart Management ---
-    const loadCart = async (userId) => {
-        try {
-            const cartRef = doc(db, 'carts', userId);
-            const cartSnap = await getDoc(cartRef);
-            if (cartSnap.exists()) {
-                setCart(cartSnap.data().items || {});
-            } else {
-                setCart({});
-            }
-        } catch (err) {
-            setError('Failed to load cart.');
-            console.error(err);
-        }
-    };
-
-    const saveCart = async (newCart) => {
-        if (!user) return;
-        try {
-            const cartRef = doc(db, 'carts', user.uid);
-            await setDoc(cartRef, { items: newCart });
-        } catch (err) {
-            setError('Failed to save cart.');
-            console.error(err);
-        }
-    };
-
-    const addToCart = (productId) => {
-        if (!user) {
-            setAuthMessage('Please log in to add items to your cart.');
-            setCurrentPage('login');
-            return;
-        }
-
-        const newCart = { ...cart };
-        newCart[productId] = (newCart[productId] || 0) + 1;
-        setCart(newCart);
-        saveCart(newCart);
-    };
-
-    const removeFromCart = (productId) => {
-        const newCart = { ...cart };
-        if (newCart[productId] > 1) {
-            newCart[productId] -= 1;
-        } else {
-            delete newCart[productId];
-        }
-        setCart(newCart);
-        saveCart(newCart);
-    };
-
-    const deleteFromCart = (productId) => {
-        const newCart = { ...cart };
-        delete newCart[productId];
-        setCart(newCart);
-        saveCart(newCart);
-    };
-
-    const viewProduct = (product) => {
-        setSelectedProduct(product);
-        navigate('productDetail');
-    };
-
-    // Note: The 'addProduct' function has been moved to the Admin page logic.
-    const value = {
-        user,
-        products,
-        cart,
-        currentPage,
-        selectedProduct,
-        loading,
-        error,
-        authMessage,
-        signUp,
-        logIn,
-        logOut,
-        addToCart,
-        removeFromCart,
-        deleteFromCart,
-        navigate,
-        fetchProducts, // Pass fetchProducts to be used by Admin page
-        db, // Pass db instance to be used by Admin page
-        cartCount: Object.values(cart).reduce((acc, count) => acc + count, 0),
-    };
-
-    return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
-};
+import { AppProvider, useAppContext } from './AppContext';
+import AdminPage from './adminPage';
 
 // --- Components ---
 
 const Navbar = () => {
-    const { user, logOut, navigate, cartCount } = useContext(AppContext);
-    // Note: The Admin button is removed. It would be added conditionally
-    // in a real app based on user roles (e.g., custom claims).
+    const { user, logOut, navigate, cartCount } = useAppContext();
 
     return (
         <nav className="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-10">
@@ -208,6 +25,9 @@ const Navbar = () => {
                 {user ? (
                     <>
                         <span className="text-gray-700 hidden sm:block">Welcome, {user.email.split('@')[0]}</span>
+                        <button onClick={() => navigate('admin')} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+                            Admin
+                        </button>
                         <button onClick={logOut} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
                             Logout
                         </button>
@@ -228,7 +48,7 @@ const Navbar = () => {
 };
 
 const ProductList = () => {
-    const { products, addToCart, viewProduct } = useContext(AppContext);
+    const { products, addToCart, viewProduct } = useAppContext();
 
     return (
         <div className="container mx-auto p-4">
@@ -264,7 +84,7 @@ const ProductList = () => {
 };
 
 const ProductDetail = () => {
-    const { selectedProduct, addToCart, navigate } = useContext(AppContext);
+    const { selectedProduct, addToCart, navigate } = useAppContext();
 
     if (!selectedProduct) {
         return (
@@ -307,9 +127,8 @@ const ProductDetail = () => {
     );
 };
 
-
 const Cart = () => {
-    const { cart, products, addToCart, removeFromCart, deleteFromCart, user, navigate } = useContext(AppContext);
+    const { cart, products, addToCart, removeFromCart, deleteFromCart, user, navigate } = useAppContext();
 
     const cartItems = Object.keys(cart).map(productId => {
         const product = products.find(p => p.id === productId);
@@ -378,9 +197,9 @@ const Cart = () => {
 };
 
 const AuthForm = ({ isSignUp = false }) => {
-    const { signUp, logIn, error, authMessage, navigate } = useContext(AppContext);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const { signUp, logIn, error, authMessage, navigate } = useAppContext();
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -437,7 +256,6 @@ const AuthForm = ({ isSignUp = false }) => {
     );
 };
 
-
 // --- Main App Component ---
 export default function App() {
     return (
@@ -448,13 +266,12 @@ export default function App() {
 }
 
 const Main = () => {
-    const { currentPage, loading, error } = useContext(AppContext);
+    const { currentPage, loading, error } = useAppContext();
 
     if (loading) {
         return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div></div>;
     }
 
-    // To re-integrate the AdminPage, you would import it and add a case for 'admin' here.
     const renderPage = () => {
         switch (currentPage) {
             case 'products':
@@ -467,8 +284,8 @@ const Main = () => {
                 return <AuthForm />;
             case 'signup':
                 return <AuthForm isSignUp />;
-            // case 'admin':
-            //     return <AdminPage />;
+            case 'admin':
+                return <AdminPage />;
             default:
                 return <ProductList />;
         }

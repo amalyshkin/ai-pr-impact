@@ -1,17 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { collection, addDoc } from 'firebase/firestore';
-// In a real project, AppContext would be imported from its own file
-// import { AppContext } from './AppContext'; 
-
-// This is a placeholder since the real context is in the main App file.
-// When integrating, you would remove this and use the imported context.
-const AppContext = React.createContext();
+import { useAppContext } from './AppContext';
 
 // --- Admin Page Component ---
-// This component would be the default export of an AdminPage.js file.
 const AdminPage = () => {
     // It consumes the shared context from the main application.
-    const { db, fetchProducts } = useContext(AppContext);
+    const { db, fetchProducts } = useAppContext();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
