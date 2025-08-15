@@ -1,4 +1,4 @@
-# AI PR Impact - Hackathon Project
+Hackathon project - AI PR impact analyze
 
 An e-commerce application with AI-powered PR impact analysis.
 
@@ -69,6 +69,7 @@ npm start
 - 🔐 User authentication with Firebase Auth
 - 🛍️ Product catalog with shopping cart
 - 👨‍💼 Admin panel for product management (role-based access)
+- 📊 CSV import functionality for bulk product upload
 - 🛒 Persistent cart storage
 - 📱 Responsive design with Tailwind CSS
 - 🔒 Role-based access control (Admin/User roles)
@@ -85,14 +86,36 @@ npm start
 - Non-admin users see an "Access Denied" page
 
 ### Admin Panel Features
-- Add new products with name, description, price, and image URL
-- Real-time product list updates
+
+#### Manual Product Addition
+- Add individual products with name, description, price, and image URL
 - Form validation and error handling
+- Real-time product list updates
+
+#### CSV Import System
+- Bulk import products from CSV files
+- Automatic format validation before import
+- Support for required columns: `name`, `description`, `price`
+- Data is appended to existing products (no overwrite)
+- Detailed error reporting for invalid files
+
+##### CSV Format Requirements
+- Header row with columns: `name, description, price`
+- Price must be a positive number
+- Sample file: `sample_products.csv`
+
+##### Import Process
+1. Choose a CSV file using the file picker
+2. System validates format automatically
+3. Import button is enabled only for valid files
+4. Products are imported and added to the database
+5. Success/error messages are displayed
 
 ## Project Structure
 
 - `onlineShopApp.jsx` - Main React application
-- `adminPage.jsx` - Admin panel component
+- `adminPage.jsx` - Admin panel component with CSV import functionality
 - `AppContext.jsx` - Shared application context with role management
 - `server.js` - Express.js backend server with admin helper functions
 - `serviceAccountKey.json` - Firebase service account credentials
+- `sample_products.csv` - Example CSV file for testing imports
