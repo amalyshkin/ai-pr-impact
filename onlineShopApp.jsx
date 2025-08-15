@@ -6,7 +6,7 @@ import AdminPage from './adminPage';
 // --- Components ---
 
 const Navbar = () => {
-    const { user, logOut, navigate, cartCount } = useAppContext();
+    const { user, isAdmin, logOut, navigate, cartCount } = useAppContext();
 
     return (
         <nav className="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-10">
@@ -25,9 +25,11 @@ const Navbar = () => {
                 {user ? (
                     <>
                         <span className="text-gray-700 hidden sm:block">Welcome, {user.email.split('@')[0]}</span>
-                        <button onClick={() => navigate('admin')} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
-                            Admin
-                        </button>
+                        {isAdmin() && (
+                            <button onClick={() => navigate('admin')} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+                                Admin
+                            </button>
+                        )}
                         <button onClick={logOut} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
                             Logout
                         </button>
@@ -196,6 +198,30 @@ const Cart = () => {
     );
 };
 
+const AccessDenied = () => {
+    const { navigate } = useAppContext();
+    
+    return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md text-center">
+                <div className="text-red-500 mb-4">
+                    <svg className="w-16 h-16 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                    </svg>
+                </div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">Access Denied</h2>
+                <p className="text-gray-600 mb-6">You don't have permission to access the admin panel. Only administrators can view this page.</p>
+                <button 
+                    onClick={() => navigate('products')} 
+                    className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600"
+                >
+                    Back to Products
+                </button>
+            </div>
+        </div>
+    );
+};
+
 const AuthForm = ({ isSignUp = false }) => {
     const { signUp, logIn, error, authMessage, navigate } = useAppContext();
     const [email, setEmail] = React.useState('');
@@ -266,7 +292,7 @@ export default function App() {
 }
 
 const Main = () => {
-    const { currentPage, loading, error } = useAppContext();
+    const { currentPage, loading, error, isAdmin } = useAppContext();
 
     if (loading) {
         return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div></div>;
@@ -285,6 +311,10 @@ const Main = () => {
             case 'signup':
                 return <AuthForm isSignUp />;
             case 'admin':
+                // Check if user has admin privileges
+                if (!isAdmin()) {
+                    return <AccessDenied />;
+                }
                 return <AdminPage />;
             default:
                 return <ProductList />;

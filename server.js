@@ -89,6 +89,28 @@ app.listen(PORT, () => {
 });
 
 
+// --- Helper to set user as admin ---
+// Run this function to grant admin privileges to a specific user
+async function setUserAsAdmin(userEmail) {
+    try {
+        // Find user by email
+        const usersRef = db.collection('users');
+        const q = usersRef.where('email', '==', userEmail);
+        const querySnapshot = await q.get();
+        
+        if (querySnapshot.empty) {
+            console.log(`User with email ${userEmail} not found. Please make sure the user has logged in at least once.`);
+            return;
+        }
+        
+        const userDoc = querySnapshot.docs[0];
+        await userDoc.ref.update({ role: 'admin' });
+        console.log(`User ${userEmail} has been granted admin privileges!`);
+    } catch (error) {
+        console.error('Error setting user as admin:', error);
+    }
+}
+
 // --- Helper to add sample data to Firestore ---
 // You can run this function once to populate your database.
 // Make sure to comment it out or remove it after use.
@@ -152,5 +174,8 @@ async function addSampleProducts() {
     console.log("Sample products added successfully!");
 }
 
-// Uncomment the line below to run the function.
+// Uncomment the lines below to run the functions.
 // addSampleProducts().catch(console.error);
+
+// To grant admin privileges to a user, uncomment and modify the line below:
+// setUserAsAdmin('user@example.com').catch(console.error);

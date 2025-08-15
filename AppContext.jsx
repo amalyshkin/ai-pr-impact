@@ -24,6 +24,7 @@ export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [userRole, setUserRole] = useState(null);
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState({});
     const [currentPage, setCurrentPage] = useState('products'); // products, cart, productDetail, login, signup, admin
@@ -34,18 +35,42 @@ export const AppProvider = ({ children }) => {
     
     // --- Authentication ---
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
             setUser(user);
             if (user) {
                 loadCart(user.uid);
+                await loadUserRole(user.uid);
                 if(authMessage) setAuthMessage(null);
             } else {
                 setCart({});
+                setUserRole(null);
             }
             setLoading(false);
         });
         return () => unsubscribe();
     }, [authMessage]);
+
+    // --- User Role Management ---
+    const loadUserRole = async (userId) => {
+        try {
+            const userRef = doc(db, 'users', userId);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+                setUserRole(userSnap.data().role || 'user');
+            } else {
+                // Create new user with default role
+                await setDoc(userRef, { role: 'user', email: user.email, createdAt: new Date() });
+                setUserRole('user');
+            }
+        } catch (err) {
+            console.error('Failed to load user role:', err);
+            setUserRole('user'); // Default to user role on error
+        }
+    };
+
+    const isAdmin = () => {
+        return userRole === 'admin';
+    };
 
     const signUp = async (email, password) => {
         try {
@@ -158,6 +183,8 @@ export const AppProvider = ({ children }) => {
 
     const value = {
         user,
+        userRole,
+        isAdmin,
         products,
         cart,
         currentPage,
