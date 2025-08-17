@@ -50,11 +50,28 @@ npm start
 ## Features
 
 - 🔐 User authentication with Firebase Auth
+- 👤 User profile management with editable name and nickname
 - 🛍️ Product catalog with shopping cart
 - 👨‍💼 Admin panel for product management
 - 📊 CSV import functionality for bulk product upload
 - 🛒 Persistent cart storage
 - 📱 Responsive design with Tailwind CSS
+
+## User Profile Features
+
+### Profile Management
+- View and edit user profile information
+- Editable fields: Full Name and Nickname
+- Email address display (read-only)
+- Account creation and last sign-in information
+- Real-time validation and error handling
+
+### Profile Editing
+- Toggle between view and edit modes
+- Form validation for required fields
+- Save changes with "Update Profile" button
+- Cancel editing to revert changes
+- Success/error feedback messages
 
 ## Admin Panel Features
 
@@ -85,6 +102,7 @@ npm start
 ## Project Structure
 
 - `onlineShopApp.jsx` - Main React application
+- `UserProfile.jsx` - User profile management component
 - `adminPage.jsx` - Admin panel with CSV import functionality
 - `AppContext.jsx` - Shared application context
 - `server.js` - Express.js backend server

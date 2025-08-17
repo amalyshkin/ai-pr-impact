@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
-import { Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react';
+import { Minus, Plus, ShoppingCart, Trash2, User } from 'lucide-react';
 import { AppProvider, useAppContext } from './AppContext';
 import AdminPage from './adminPage';
+import UserProfile from './UserProfile';
 
 // --- Components ---
 
@@ -25,6 +26,10 @@ const Navbar = () => {
                 {user ? (
                     <>
                         <span className="text-gray-700 hidden sm:block">Welcome, {user.email.split('@')[0]}</span>
+                        <button onClick={() => navigate('profile')} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center">
+                            <User size={18} className="mr-2" />
+                            Profile
+                        </button>
                         <button onClick={() => navigate('admin')} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
                             Admin
                         </button>
@@ -286,6 +291,8 @@ const Main = () => {
                 return <AuthForm isSignUp />;
             case 'admin':
                 return <AdminPage />;
+            case 'profile':
+                return <UserProfile />;
             default:
                 return <ProductList />;
         }
