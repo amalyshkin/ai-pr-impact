@@ -175,7 +175,6 @@ const Cart = () => {
                 {cartItems.map(item => (
                     <div key={item.id} className="flex flex-col sm:flex-row items-center justify-between border-b py-4">
                         <div className="flex items-center mb-4 sm:mb-0">
-                            <img src={item.imageUrl || `https://placehold.co/100x100/E0E0E0/4A4A4A?text=${item.name}`} alt={item.name} className="w-20 h-20 object-cover rounded-lg mr-4" />
                             <div>
                                 <h3 className="text-lg font-semibold">{item.name}</h3>
                                 <p className="text-gray-600">${item.price.toFixed(2)}</p>
