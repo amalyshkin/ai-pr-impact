@@ -69,6 +69,7 @@ npm start
 - 🔐 User authentication with Firebase Auth
 - 👤 User profile management with editable name and nickname
 - 🛍️ Product catalog with shopping cart
+- 🖼️ Product images displayed on all product pages
 - 👨‍💼 Admin panel for product management (role-based access)
 - 📊 CSV import functionality for bulk product upload
 - 🛒 Persistent cart storage
@@ -108,6 +109,7 @@ npm start
 - Add individual products with name, description, price, and image URL
 - Form validation and error handling
 - Real-time product list updates
+- Product images displayed in admin panel
 
 #### CSV Import System
 - Bulk import products from CSV files

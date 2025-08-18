@@ -5,7 +5,7 @@ import { useAppContext } from './AppContext';
 // --- Admin Page Component ---
 const AdminPage = () => {
     // It consumes the shared context from the main application.
-    const { db, fetchProducts } = useAppContext();
+    const { db, fetchProducts, products } = useAppContext();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
@@ -316,6 +316,39 @@ const AdminPage = () => {
                         {isSubmitting ? 'Adding Product...' : 'Add Product'}
                     </button>
                 </form>
+            </div>
+
+            {/* Product List Section */}
+            <div className="mt-8">
+                <h3 className="text-2xl font-bold mb-6 text-gray-800">Current Products</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {products.map((product) => (
+                        <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                            <div className="h-48 bg-gray-200 flex items-center justify-center">
+                                {product.imageUrl ? (
+                                    <img
+                                        src={product.imageUrl}
+                                        alt={product.name}
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => { 
+                                            e.target.onerror = null; 
+                                            e.target.src = `https://placehold.co/400x300/E0E0E0/4A4A4A?text=${product.name}`; 
+                                        }}
+                                    />
+                                ) : (
+                                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                                        <span className="text-gray-500 text-sm">No Image</span>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="p-4">
+                                <h4 className="text-lg font-semibold mb-2 truncate">{product.name}</h4>
+                                <p className="text-gray-600 text-sm mb-2 line-clamp-2">{product.description}</p>
+                                <p className="text-lg font-bold text-blue-600">${product.price.toFixed(2)}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );
