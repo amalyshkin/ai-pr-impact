@@ -67,6 +67,7 @@ npm start
 ## Features
 
 - 🔐 User authentication with Firebase Auth
+- 👤 User profile management with editable name and nickname
 - 🛍️ Product catalog with shopping cart
 - 👨‍💼 Admin panel for product management (role-based access)
 - 📊 CSV import functionality for bulk product upload
@@ -74,7 +75,23 @@ npm start
 - 📱 Responsive design with Tailwind CSS
 - 🔒 Role-based access control (Admin/User roles)
 
-## Admin System
+## User Profile Features
+
+### Profile Management
+- View and edit user profile information
+- Editable fields: Full Name and Nickname
+- Email address display (read-only)
+- Account creation and last sign-in information
+- Real-time validation and error handling
+
+### Profile Editing
+- Toggle between view and edit modes
+- Form validation for required fields
+- Save changes with "Update Profile" button
+- Cancel editing to revert changes
+- Success/error feedback messages
+
+## Admin Panel Features
 
 ### User Roles
 - **User (default)**: Can browse products, add to cart, and make purchases
@@ -114,6 +131,7 @@ npm start
 ## Project Structure
 
 - `onlineShopApp.jsx` - Main React application
+- `UserProfile.jsx` - User profile management component
 - `adminPage.jsx` - Admin panel component with CSV import functionality
 - `AppContext.jsx` - Shared application context with role management
 - `server.js` - Express.js backend server with admin helper functions
