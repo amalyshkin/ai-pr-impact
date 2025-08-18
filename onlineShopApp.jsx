@@ -7,7 +7,12 @@ import UserProfile from './UserProfile';
 // --- Components ---
 
 const Navbar = () => {
-    const { user, isAdmin, logOut, navigate, cartCount } = useAppContext();
+    const { user, userProfile, isAdmin, logOut, navigate, cartCount } = useAppContext();
+
+    const getInitials = (name) => {
+        if (!name) return '?';
+        return name.split(' ').map(word => word.charAt(0)).join('').toUpperCase().slice(0, 2);
+    };
 
     return (
         <nav className="bg-white shadow-md p-4 flex justify-between items-center sticky top-0 z-10">
@@ -25,7 +30,28 @@ const Navbar = () => {
                 </button>
                 {user ? (
                     <>
-                        <span className="text-gray-700 hidden sm:block">Welcome, {user.email.split('@')[0]}</span>
+                        {/* User Avatar */}
+                        <div className="flex items-center space-x-3">
+                            <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center border-2 border-gray-300">
+                                {userProfile?.avatarUrl ? (
+                                    <img 
+                                        src={userProfile.avatarUrl} 
+                                        alt="User Avatar" 
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            e.target.nextSibling.style.display = 'flex';
+                                        }}
+                                    />
+                                ) : null}
+                                <div className={`w-full h-full flex items-center justify-center text-sm font-bold text-gray-600 ${userProfile?.avatarUrl ? 'hidden' : ''}`}>
+                                    {getInitials(userProfile?.name || user.email.split('@')[0])}
+                                </div>
+                            </div>
+                            <span className="text-gray-700 hidden sm:block">
+                                Welcome, {userProfile?.name || user.email.split('@')[0]}
+                            </span>
+                        </div>
                         <button onClick={() => navigate('profile')} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center">
                             <User size={18} className="mr-2" />
                             Profile
