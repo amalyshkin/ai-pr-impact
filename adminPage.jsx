@@ -10,6 +10,7 @@ const AdminPage = () => {
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [imageUrl, setImageUrl] = useState('');
+    const [vendor, setVendor] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formMessage, setFormMessage] = useState(null);
     
@@ -48,7 +49,7 @@ const AdminPage = () => {
                     }
 
                     const headerRow = lines[0].split(',').map(col => col.trim().toLowerCase());
-                    const requiredColumns = ['name', 'description', 'price'];
+                    const requiredColumns = ['name', 'description', 'price', 'vendor'];
                     const missingColumns = requiredColumns.filter(col => !headerRow.includes(col));
                     const extraColumns = headerRow.filter(col => !requiredColumns.includes(col));
 
@@ -87,6 +88,16 @@ const AdminPage = () => {
                             resolve({ 
                                 isValid: false, 
                                 message: `Row ${i + 1}: Price must be a positive number.` 
+                            });
+                            return;
+                        }
+
+                        // Validate vendor is not empty
+                        const vendor = values[3];
+                        if (!vendor || vendor.trim() === '') {
+                            resolve({ 
+                                isValid: false, 
+                                message: `Row ${i + 1}: Vendor name is required.` 
                             });
                             return;
                         }
@@ -148,6 +159,7 @@ const AdminPage = () => {
                             name: values[0],
                             description: values[1],
                             price: parseFloat(values[2]),
+                            vendor: values[3],
                             imageUrl: '' // Default empty image URL
                         };
 
@@ -212,6 +224,7 @@ const AdminPage = () => {
             name,
             description,
             price: parseFloat(price),
+            vendor,
             imageUrl
         };
 
@@ -224,6 +237,7 @@ const AdminPage = () => {
             setDescription('');
             setPrice('');
             setImageUrl('');
+            setVendor('');
         } else {
             setFormMessage({ type: 'error', text: 'Failed to add product. Please try again.' });
         }
@@ -271,8 +285,9 @@ const AdminPage = () => {
                 <div className="mb-6">
                     <h4 className="font-semibold text-gray-700 mb-2">CSV Format Requirements:</h4>
                     <ul className="text-sm text-gray-600 space-y-1">
-                        <li>• Header row with columns: <code className="bg-gray-100 px-1 rounded">name, description, price</code></li>
+                        <li>• Header row with columns: <code className="bg-gray-100 px-1 rounded">name, description, price, vendor</code></li>
                         <li>• Price must be a positive number</li>
+                        <li>• Vendor name is required</li>
                         <li>• Data will be appended to existing products (no duplicates checked)</li>
                         <li>• Image URLs will be set to empty (can be updated later)</li>
                     </ul>
@@ -303,6 +318,10 @@ const AdminPage = () => {
                     <div className="mb-4">
                         <label className="block text-gray-700 mb-2" htmlFor="description">Description</label>
                         <textarea id="description" value={description} onChange={e => setDescription(e.target.value)} className="w-full px-3 py-2 border rounded-lg" required />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 mb-2" htmlFor="vendor">Vendor</label>
+                        <input type="text" id="vendor" value={vendor} onChange={e => setVendor(e.target.value)} className="w-full px-3 py-2 border rounded-lg" required />
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-700 mb-2" htmlFor="price">Price</label>
