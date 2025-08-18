@@ -74,6 +74,7 @@ npm start
 - 🛒 Persistent cart storage
 - 📱 Responsive design with Tailwind CSS
 - 🔒 Role-based access control (Admin/User roles)
+- 🦶 Professional footer with company branding and contact information
 
 ## User Profile Features
 
@@ -134,6 +135,7 @@ npm start
 - `UserProfile.jsx` - User profile management component
 - `adminPage.jsx` - Admin panel component with CSV import functionality
 - `AppContext.jsx` - Shared application context with role management
+- `Footer.jsx` - Uniform footer component with company branding
 - `server.js` - Express.js backend server with admin helper functions
 - `serviceAccountKey.json` - Firebase service account credentials
 - `sample_products.csv` - Example CSV file for testing imports

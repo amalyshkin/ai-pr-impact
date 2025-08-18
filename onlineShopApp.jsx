@@ -3,6 +3,7 @@ import { Minus, Plus, ShoppingCart, Trash2, User } from 'lucide-react';
 import { AppProvider, useAppContext } from './AppContext';
 import AdminPage from './adminPage';
 import UserProfile from './UserProfile';
+import Footer from './Footer';
 
 // --- Components ---
 
@@ -329,12 +330,13 @@ const Main = () => {
     };
 
     return (
-        <div className="bg-gray-100 min-h-screen">
+        <div className="bg-gray-100 min-h-screen flex flex-col">
             <Navbar />
-            <main>
+            <main className="flex-1">
                 {error && <p className="bg-red-500 text-white p-4 text-center">{error}</p>}
                 {renderPage()}
             </main>
+            {currentPage !== 'admin' && <Footer />}
         </div>
     );
 };
