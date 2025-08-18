@@ -112,13 +112,14 @@ npm start
 #### CSV Import System
 - Bulk import products from CSV files
 - Automatic format validation before import
-- Support for required columns: `name`, `description`, `price`
+- Support for required columns: `name`, `description`, `price`, `origincountry`
 - Data is appended to existing products (no overwrite)
 - Detailed error reporting for invalid files
 
 ##### CSV Format Requirements
-- Header row with columns: `name, description, price`
+- Header row with columns: `name, description, price, origincountry`
 - Price must be a positive number
+- Origin country is optional but recommended
 - Sample file: `sample_products.csv`
 
 ##### Import Process

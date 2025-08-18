@@ -72,7 +72,12 @@ const ProductList = () => {
                         />
                         <div className="p-4">
                             <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-                            <p className="text-gray-600 mb-4 truncate">{product.description}</p>
+                            <p className="text-gray-600 mb-2 truncate">{product.description}</p>
+                            {product.originCountry && (
+                                <p className="text-sm text-gray-500 mb-3">
+                                    <span className="font-medium">Origin:</span> {product.originCountry}
+                                </p>
+                            )}
                             <div className="flex justify-between items-center">
                                 <p className="text-xl font-bold text-blue-600">${product.price.toFixed(2)}</p>
                                 <button
@@ -120,7 +125,12 @@ const ProductDetail = () => {
                 </div>
                 <div className="md:w-1/2 p-8 flex flex-col justify-center">
                     <h2 className="text-4xl font-bold mb-4">{selectedProduct.name}</h2>
-                    <p className="text-gray-700 text-lg mb-6">{selectedProduct.description}</p>
+                    <p className="text-gray-700 text-lg mb-4">{selectedProduct.description}</p>
+                    {selectedProduct.originCountry && (
+                        <p className="text-gray-600 mb-6">
+                            <span className="font-semibold">Origin Country:</span> {selectedProduct.originCountry}
+                        </p>
+                    )}
                     <p className="text-3xl font-bold text-blue-600 mb-6">${selectedProduct.price.toFixed(2)}</p>
                     <button
                         onClick={() => addToCart(selectedProduct.id)}
