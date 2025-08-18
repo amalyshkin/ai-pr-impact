@@ -68,12 +68,37 @@ npm start
 
 - 🔐 User authentication with Firebase Auth
 - 👤 User profile management with editable name and nickname
-- 🛍️ Product catalog with shopping cart
+- 🛍️ Product catalog with shopping cart and vendor information
 - 👨‍💼 Admin panel for product management (role-based access)
 - 📊 CSV import functionality for bulk product upload
 - 🛒 Persistent cart storage
 - 📱 Responsive design with Tailwind CSS
 - 🔒 Role-based access control (Admin/User roles)
+
+## Product Vendor Information
+
+### Vendor Display
+- Vendor names are displayed on the right side of product names
+- Visible on product list and product detail pages
+- Not displayed in the shopping cart (as requested)
+- Fallback to "Unknown Vendor" for products without vendor information
+
+### Database Schema
+Products now include a `vendor` field:
+- **Required field** for new products
+- **String value** containing the vendor name
+- **Backward compatible** with existing products (shows "Unknown Vendor")
+
+### Updating Existing Products
+If you have existing products without vendor information, run the utility script:
+```bash
+node updateVendors.js
+```
+
+This script will:
+- Update existing products with default vendor names
+- Skip products that already have vendor information
+- Set "Unknown Vendor" for products without a default mapping
 
 ## User Profile Features
 
@@ -105,20 +130,21 @@ npm start
 ### Admin Panel Features
 
 #### Manual Product Addition
-- Add individual products with name, description, price, and image URL
+- Add individual products with name, description, price, vendor, and image URL
 - Form validation and error handling
 - Real-time product list updates
 
 #### CSV Import System
 - Bulk import products from CSV files
 - Automatic format validation before import
-- Support for required columns: `name`, `description`, `price`
+- Support for required columns: `name`, `description`, `price`, `vendor`
 - Data is appended to existing products (no overwrite)
 - Detailed error reporting for invalid files
 
 ##### CSV Format Requirements
-- Header row with columns: `name, description, price`
+- Header row with columns: `name, description, price, vendor`
 - Price must be a positive number
+- Vendor name is required
 - Sample file: `sample_products.csv`
 
 ##### Import Process
@@ -137,3 +163,4 @@ npm start
 - `server.js` - Express.js backend server with admin helper functions
 - `serviceAccountKey.json` - Firebase service account credentials
 - `sample_products.csv` - Example CSV file for testing imports
+- `updateVendors.js` - Utility script to update existing products with vendor information

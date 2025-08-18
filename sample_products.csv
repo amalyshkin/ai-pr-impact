@@ -1,9 +1,9 @@
-name,description,price
-Laptop Pro,A high-performance laptop for all your professional needs. Features a stunning display and blazing-fast processor.,1299.99
-Wireless Headphones,Immerse yourself in crystal-clear audio with these noise-cancelling wireless headphones. Long-lasting battery life.,199.99
-Smart Watch,Stay connected and track your fitness goals with this sleek and stylish smart watch. Syncs with your smartphone.,249.50
-Coffee Maker,Brew the perfect cup of coffee every morning. Programmable and easy to clean.,89.99
-Gaming Mouse,Get the competitive edge with this ergonomic gaming mouse, featuring customizable buttons and RGB lighting.,79.99
-Mechanical Keyboard,A durable and responsive mechanical keyboard for typing and gaming. Satisfying tactile feedback.,120.00
-4K Monitor,Experience stunning visuals with this 27-inch 4K UHD monitor. Perfect for creative work and entertainment.,450.00
-Portable SSD,1TB of lightning-fast storage in a compact design. Transfer large files in seconds.,150.00
+name,description,price,vendor
+Laptop Pro,A high-performance laptop for all your professional needs. Features a stunning display and blazing-fast processor.,1299.99,TechCorp
+Wireless Headphones,Immerse yourself in crystal-clear audio with these noise-cancelling wireless headphones. Long-lasting battery life.,199.99,AudioMax
+Smart Watch,Stay connected and track your fitness goals with this sleek and stylish smart watch. Syncs with your smartphone.,249.50,SmartTech
+Coffee Maker,Brew the perfect cup of coffee every morning. Programmable and easy to clean.,89.99,HomeBrew
+Gaming Mouse,Get the competitive edge with this ergonomic gaming mouse, featuring customizable buttons and RGB lighting.,79.99,GamingPro
+Mechanical Keyboard,A durable and responsive mechanical keyboard for typing and gaming. Satisfying tactile feedback.,120.00,KeyMaster
+4K Monitor,Experience stunning visuals with this 27-inch 4K UHD monitor. Perfect for creative work and entertainment.,450.00,DisplayTech
+Portable SSD,1TB of lightning-fast storage in a compact design. Transfer large files in seconds.,150.00,StoragePlus
