@@ -49,8 +49,9 @@ const AdminPage = () => {
 
                     const headerRow = lines[0].split(',').map(col => col.trim().toLowerCase());
                     const requiredColumns = ['name', 'description', 'price'];
+                    const optionalColumns = ['imageurl'];
                     const missingColumns = requiredColumns.filter(col => !headerRow.includes(col));
-                    const extraColumns = headerRow.filter(col => !requiredColumns.includes(col));
+                    const extraColumns = headerRow.filter(col => !requiredColumns.includes(col) && !optionalColumns.includes(col));
 
                     if (missingColumns.length > 0) {
                         resolve({ 
@@ -63,7 +64,7 @@ const AdminPage = () => {
                     if (extraColumns.length > 0) {
                         resolve({ 
                             isValid: false, 
-                            message: `Extra columns found: ${extraColumns.join(', ')}. Only name, description, and price are allowed.` 
+                            message: `Extra columns found: ${extraColumns.join(', ')}. Only name, description, price, and imageurl are allowed.` 
                         });
                         return;
                     }
@@ -73,10 +74,12 @@ const AdminPage = () => {
                         if (lines[i].trim() === '') continue; // Skip empty lines
                         
                         const values = lines[i].split(',').map(val => val.trim());
-                        if (values.length !== requiredColumns.length) {
+                        const expectedColumns = headerRow.includes('imageurl') ? 4 : 3;
+                        
+                        if (values.length !== expectedColumns) {
                             resolve({ 
                                 isValid: false, 
-                                message: `Row ${i + 1}: Incorrect number of columns. Expected ${requiredColumns.length}, got ${values.length}.` 
+                                message: `Row ${i + 1}: Incorrect number of columns. Expected ${expectedColumns}, got ${values.length}.` 
                             });
                             return;
                         }
@@ -148,7 +151,7 @@ const AdminPage = () => {
                             name: values[0],
                             description: values[1],
                             price: parseFloat(values[2]),
-                            imageUrl: '' // Default empty image URL
+                            imageUrl: headerRow.includes('imageurl') ? values[3] : '' // Use image URL if provided, otherwise empty
                         };
 
                         try {
@@ -272,9 +275,10 @@ const AdminPage = () => {
                     <h4 className="font-semibold text-gray-700 mb-2">CSV Format Requirements:</h4>
                     <ul className="text-sm text-gray-600 space-y-1">
                         <li>• Header row with columns: <code className="bg-gray-100 px-1 rounded">name, description, price</code></li>
+                        <li>• Optional: <code className="bg-gray-100 px-1 rounded">imageurl</code> column for product images</li>
                         <li>• Price must be a positive number</li>
                         <li>• Data will be appended to existing products (no duplicates checked)</li>
-                        <li>• Image URLs will be set to empty (can be updated later)</li>
+                        <li>• If imageurl column is missing, image URLs will be set to empty (can be updated later)</li>
                     </ul>
                 </div>
                 
