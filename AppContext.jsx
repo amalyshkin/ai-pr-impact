@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, useContext } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 // --- Firebase Configuration ---
 // IMPORTANT: Replace with your actual Firebase configuration
@@ -18,6 +19,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 
 // --- App Context ---
 export const AppContext = createContext();
@@ -25,6 +27,7 @@ export const AppContext = createContext();
 export const AppProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [userRole, setUserRole] = useState(null);
+    const [userProfile, setUserProfile] = useState(null);
     const [products, setProducts] = useState([]);
     const [cart, setCart] = useState({});
     const [currentPage, setCurrentPage] = useState('products'); // products, cart, productDetail, login, signup, admin
@@ -44,6 +47,7 @@ export const AppProvider = ({ children }) => {
             } else {
                 setCart({});
                 setUserRole(null);
+                setUserProfile(null);
             }
             setLoading(false);
         });
@@ -56,16 +60,44 @@ export const AppProvider = ({ children }) => {
             const userRef = doc(db, 'users', userId);
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) {
-                setUserRole(userSnap.data().role || 'user');
+                const userData = userSnap.data();
+                setUserRole(userData.role || 'user');
+                setUserProfile({
+                    name: userData.name || '',
+                    nickname: userData.nickname || '',
+                    avatarUrl: userData.avatarUrl || ''
+                });
             } else {
                 // Create new user with default role
-                await setDoc(userRef, { role: 'user', email: user.email, createdAt: new Date() });
+                const newUserData = { 
+                    role: 'user', 
+                    email: user.email, 
+                    name: '',
+                    nickname: '',
+                    avatarUrl: '',
+                    createdAt: new Date() 
+                };
+                await setDoc(userRef, newUserData);
                 setUserRole('user');
+                setUserProfile({
+                    name: '',
+                    nickname: '',
+                    avatarUrl: ''
+                });
             }
         } catch (err) {
             console.error('Failed to load user role:', err);
             setUserRole('user'); // Default to user role on error
+            setUserProfile({
+                name: '',
+                nickname: '',
+                avatarUrl: ''
+            });
         }
+    };
+
+    const updateUserProfile = (newProfile) => {
+        setUserProfile(newProfile);
     };
 
     const isAdmin = () => {
@@ -184,6 +216,7 @@ export const AppProvider = ({ children }) => {
     const value = {
         user,
         userRole,
+        userProfile,
         isAdmin,
         products,
         cart,
@@ -200,7 +233,9 @@ export const AppProvider = ({ children }) => {
         deleteFromCart,
         navigate,
         fetchProducts,
+        updateUserProfile,
         db,
+        storage,
         cartCount: Object.values(cart).reduce((acc, count) => acc + count, 0),
     };
 
