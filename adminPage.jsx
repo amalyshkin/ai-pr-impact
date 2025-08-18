@@ -9,6 +9,7 @@ const AdminPage = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
+    const [originCountry, setOriginCountry] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formMessage, setFormMessage] = useState(null);
@@ -48,7 +49,7 @@ const AdminPage = () => {
                     }
 
                     const headerRow = lines[0].split(',').map(col => col.trim().toLowerCase());
-                    const requiredColumns = ['name', 'description', 'price'];
+                    const requiredColumns = ['name', 'description', 'price', 'origincountry'];
                     const missingColumns = requiredColumns.filter(col => !headerRow.includes(col));
                     const extraColumns = headerRow.filter(col => !requiredColumns.includes(col));
 
@@ -148,6 +149,7 @@ const AdminPage = () => {
                             name: values[0],
                             description: values[1],
                             price: parseFloat(values[2]),
+                            originCountry: values[3] || '',
                             imageUrl: '' // Default empty image URL
                         };
 
@@ -212,6 +214,7 @@ const AdminPage = () => {
             name,
             description,
             price: parseFloat(price),
+            originCountry,
             imageUrl
         };
 
@@ -223,6 +226,7 @@ const AdminPage = () => {
             setName('');
             setDescription('');
             setPrice('');
+            setOriginCountry('');
             setImageUrl('');
         } else {
             setFormMessage({ type: 'error', text: 'Failed to add product. Please try again.' });
@@ -271,8 +275,9 @@ const AdminPage = () => {
                 <div className="mb-6">
                     <h4 className="font-semibold text-gray-700 mb-2">CSV Format Requirements:</h4>
                     <ul className="text-sm text-gray-600 space-y-1">
-                        <li>• Header row with columns: <code className="bg-gray-100 px-1 rounded">name, description, price</code></li>
+                        <li>• Header row with columns: <code className="bg-gray-100 px-1 rounded">name, description, price, origincountry</code></li>
                         <li>• Price must be a positive number</li>
+                        <li>• Origin country is optional but recommended</li>
                         <li>• Data will be appended to existing products (no duplicates checked)</li>
                         <li>• Image URLs will be set to empty (can be updated later)</li>
                     </ul>
@@ -307,6 +312,10 @@ const AdminPage = () => {
                     <div className="mb-4">
                         <label className="block text-gray-700 mb-2" htmlFor="price">Price</label>
                         <input type="number" id="price" value={price} onChange={e => setPrice(e.target.value)} className="w-full px-3 py-2 border rounded-lg" required step="0.01" />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700 mb-2" htmlFor="originCountry">Origin Country</label>
+                        <input type="text" id="originCountry" value={originCountry} onChange={e => setOriginCountry(e.target.value)} className="w-full px-3 py-2 border rounded-lg" placeholder="e.g., USA, Germany, Japan" />
                     </div>
                     <div className="mb-6">
                         <label className="block text-gray-700 mb-2" htmlFor="imageUrl">Image URL</label>
