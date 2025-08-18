@@ -5,7 +5,7 @@ import { useAppContext } from './AppContext';
 // --- Admin Page Component ---
 const AdminPage = () => {
     // It consumes the shared context from the main application.
-    const { db, fetchProducts } = useAppContext();
+    const { db, fetchProducts, products } = useAppContext();
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
@@ -316,6 +316,45 @@ const AdminPage = () => {
                         {isSubmitting ? 'Adding Product...' : 'Add Product'}
                     </button>
                 </form>
+            </div>
+
+            {/* Product List Section */}
+            <div className="mt-8">
+                <h3 className="text-2xl font-bold mb-6 text-gray-800">Current Products</h3>
+                <div className="space-y-4">
+                    {products.map((product) => (
+                        <div key={product.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                            <div className="flex">
+                                <div className="w-32 h-32 flex-shrink-0">
+                                    {product.imageUrl ? (
+                                        <img
+                                            src={product.imageUrl}
+                                            alt={product.name}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => { 
+                                                e.target.onerror = null; 
+                                                e.target.src = `https://placehold.co/400x300/E0E0E0/4A4A4A?text=${product.name}`; 
+                                            }}
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                                            <span className="text-gray-500 text-sm">No Image</span>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex-1 p-4 flex flex-col justify-between">
+                                    <div>
+                                        <h4 className="text-lg font-semibold mb-2">{product.name}</h4>
+                                        <p className="text-gray-600 text-sm mb-2">{product.description}</p>
+                                    </div>
+                                    <div>
+                                        <p className="text-lg font-bold text-blue-600">${product.price.toFixed(2)}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );

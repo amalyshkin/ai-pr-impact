@@ -60,27 +60,33 @@ const ProductList = () => {
     return (
         <div className="container mx-auto p-4">
             <h2 className="text-3xl font-bold text-center mb-8">Products</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <div className="space-y-4">
                 {products.map((product) => (
                     <div key={product.id} className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
-                        <img
-                            src={product.imageUrl || `https://placehold.co/400x300/E0E0E0/4A4A4A?text=${product.name}`}
-                            alt={product.name}
-                            className="w-full h-48 object-cover cursor-pointer"
-                            onClick={() => viewProduct(product)}
-                            onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/400x300/E0E0E0/4A4A4A?text=Image+Not+Found`; }}
-                        />
-                        <div className="p-4">
-                            <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
-                            <p className="text-gray-600 mb-4 truncate">{product.description}</p>
-                            <div className="flex justify-between items-center">
-                                <p className="text-xl font-bold text-blue-600">${product.price.toFixed(2)}</p>
-                                <button
-                                    onClick={() => addToCart(product.id)}
-                                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center"
-                                >
-                                    <ShoppingCart size={18} className="mr-2"/> Add
-                                </button>
+                        <div className="flex">
+                            <div className="w-32 h-32 flex-shrink-0">
+                                <img
+                                    src={product.imageUrl || `https://placehold.co/400x300/E0E0E0/4A4A4A?text=${product.name}`}
+                                    alt={product.name}
+                                    className="w-full h-full object-cover cursor-pointer"
+                                    onClick={() => viewProduct(product)}
+                                    onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/400x300/E0E0E0/4A4A4A?text=Image+Not+Found`; }}
+                                />
+                            </div>
+                            <div className="flex-1 p-4 flex flex-col justify-between">
+                                <div>
+                                    <h3 className="text-lg font-semibold mb-2">{product.name}</h3>
+                                    <p className="text-gray-600 mb-4">{product.description}</p>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <p className="text-xl font-bold text-blue-600">${product.price.toFixed(2)}</p>
+                                    <button
+                                        onClick={() => addToCart(product.id)}
+                                        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center"
+                                    >
+                                        <ShoppingCart size={18} className="mr-2"/> Add
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -175,7 +181,6 @@ const Cart = () => {
                 {cartItems.map(item => (
                     <div key={item.id} className="flex flex-col sm:flex-row items-center justify-between border-b py-4">
                         <div className="flex items-center mb-4 sm:mb-0">
-                            <img src={item.imageUrl || `https://placehold.co/100x100/E0E0E0/4A4A4A?text=${item.name}`} alt={item.name} className="w-20 h-20 object-cover rounded-lg mr-4" />
                             <div>
                                 <h3 className="text-lg font-semibold">{item.name}</h3>
                                 <p className="text-gray-600">${item.price.toFixed(2)}</p>
