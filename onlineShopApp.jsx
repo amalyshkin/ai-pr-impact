@@ -25,7 +25,15 @@ const Navbar = () => {
                 </button>
                 {user ? (
                     <>
-                        <span className="text-gray-700 hidden sm:block">Welcome, {user.email.split('@')[0]}</span>
+                        <div className="flex items-center space-x-3">
+                            {/* User Avatar */}
+                            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                                <svg className="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                                </svg>
+                            </div>
+                            <span className="text-gray-700 hidden sm:block">Welcome, {user.email.split('@')[0]}</span>
+                        </div>
                         <button onClick={() => navigate('profile')} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 flex items-center">
                             <User size={18} className="mr-2" />
                             Profile
