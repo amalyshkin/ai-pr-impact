@@ -80,6 +80,7 @@ npm start
 ### Profile Management
 - View and edit user profile information
 - Editable fields: Full Name and Nickname
+- Avatar upload and display functionality
 - Email address display (read-only)
 - Account creation and last sign-in information
 - Real-time validation and error handling
@@ -87,6 +88,7 @@ npm start
 ### Profile Editing
 - Toggle between view and edit modes
 - Form validation for required fields
+- Avatar upload with PNG file support
 - Save changes with "Update Profile" button
 - Cancel editing to revert changes
 - Success/error feedback messages
